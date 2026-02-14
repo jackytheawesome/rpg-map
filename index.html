@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Карта для НРИ — Туман войны и точки проверок</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="toolbar">
+      <h1>Карта приключения</h1>
+      <div class="toolbar-actions">
+        <label class="btn btn-secondary">
+          Загрузить карту
+          <input type="file" id="imageInput" accept="image/*" hidden>
+        </label>
+        <div class="grid-controls">
+          <label>Клеток по горизонтали <input type="number" id="cols" min="4" max="24" value="8"></label>
+          <label>Клеток по вертикали <input type="number" id="rows" min="4" max="24" value="6"></label>
+        </div>
+        <div class="mode-toggles">
+          <label class="reveal-size">
+            <span>Открыть:</span>
+            <select id="revealSize">
+              <option value="0">1 клетку</option>
+              <option value="1">3×3</option>
+              <option value="2">5×5</option>
+            </select>
+          </label>
+          <button type="button" class="btn" id="modeReveal" title="Открывать клетки по клику">Открыть клетки</button>
+          <button type="button" class="btn" id="modeMarker" title="Добавить точку проверки">Добавить проверку</button>
+        </div>
+        <button type="button" class="btn btn-danger" id="resetBtn">Сбросить карту</button>
+      </div>
+    </header>
+
+    <main class="content">
+      <aside class="sidebar">
+        <section class="panel">
+          <h2>Точки проверок</h2>
+          <p class="hint">Нажмите «Добавить проверку» и кликните по карте, чтобы разместить точку.</p>
+          <ul id="markersList"></ul>
+        </section>
+        <section class="panel">
+          <h2>Подсказка</h2>
+          <p>Загрузите изображение карты — оно будет разбито на клетки. Открывайте клетки по мере продвижения игроков. Добавляйте точки, где нужны проверки (например, скрытность, восприятие).</p>
+        </section>
+      </aside>
+
+      <div class="map-wrapper" id="mapWrapper">
+        <div class="map-placeholder" id="mapPlaceholder">
+          <p>Загрузите изображение карты</p>
+        </div>
+        <div class="map-container" id="mapContainer" hidden>
+          <img id="mapImage" alt="Карта">
+          <div class="grid-layer" id="gridLayer"></div>
+          <div class="fog-layer" id="fogLayer"></div>
+          <div class="markers-layer" id="markersLayer"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal" id="markerModal" hidden>
+    <div class="modal-content">
+      <h3>Точка проверки</h3>
+      <label>Название <input type="text" id="markerName" placeholder="Например: Засада гоблинов"></label>
+      <label>Описание / тип проверки <input type="text" id="markerCheck" placeholder="Скрытность, Восприятие..."></label>
+      <button type="button" class="btn" id="markerSave">Сохранить</button>
+      <button type="button" class="btn btn-secondary" id="markerCancel">Отмена</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
