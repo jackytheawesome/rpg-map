@@ -315,6 +315,11 @@ body {
   min-height: 0;
 }
 
+.map-container[hidden],
+.map-placeholder[hidden] {
+  display: none !important;
+}
+
 .map-placeholder {
   width: 100%;
   max-width: 600px;

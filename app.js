@@ -111,10 +111,10 @@ function onGridChange() {
 }
 
 function showMap(dataUrl) {
-  dom.mapPlaceholder.hidden = true;
-  dom.mapContainer.hidden = false;
   dom.mapImage.src = dataUrl;
   dom.mapImage.onload = () => {
+    dom.mapPlaceholder.hidden = true;
+    dom.mapContainer.hidden = false;
     renderGrid();
     renderFog();
     renderMarkers();
