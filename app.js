@@ -28,6 +28,10 @@ const dom = {
   markerCheck: document.getElementById('markerCheck'),
   markerSave: document.getElementById('markerSave'),
   markerCancel: document.getElementById('markerCancel'),
+  diceCount: document.getElementById('diceCount'),
+  diceType: document.getElementById('diceType'),
+  diceRoll: document.getElementById('diceRoll'),
+  diceResult: document.getElementById('diceResult'),
 };
 
 let state = {
@@ -69,6 +73,7 @@ function bindEvents() {
   dom.resetBtn.addEventListener('click', onReset);
   dom.markerSave.addEventListener('click', onMarkerSave);
   dom.markerCancel.addEventListener('click', closeMarkerModal);
+  dom.diceRoll.addEventListener('click', onDiceRoll);
 
   dom.fogLayer.addEventListener('click', onMapClick);
 }
@@ -204,6 +209,35 @@ function onMapClick(e) {
     const y = ((e.clientY - rect.top) / rect.height) * 100;
     openMarkerModal({ x, y });
   }
+}
+
+// --- Кубики ---
+
+function rollDie(sides) {
+  return Math.floor(Math.random() * sides) + 1;
+}
+
+function onDiceRoll() {
+  const count = Math.max(1, Math.min(99, parseInt(dom.diceCount.value, 10) || 1));
+  const sides = parseInt(dom.diceType.value, 10);
+  dom.diceCount.value = count;
+
+  const rolls = [];
+  for (let i = 0; i < count; i++) {
+    rolls.push(rollDie(sides));
+  }
+  const sum = rolls.reduce((a, b) => a + b, 0);
+
+  const label = count === 1 ? `d${sides}` : `${count}d${sides}`;
+  let detail;
+  if (count <= 15) {
+    detail = rolls.join(' + ');
+  } else {
+    detail = `${rolls.slice(0, 6).join(', ')}… (всего ${count})`;
+  }
+  const totalText = count > 1 ? ` = ${sum}` : '';
+  dom.diceResult.textContent = `${label}: ${detail}${totalText}`;
+  dom.diceResult.hidden = false;
 }
 
 // --- Маркеры (точки проверок) ---

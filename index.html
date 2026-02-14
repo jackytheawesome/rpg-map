@@ -37,6 +37,23 @@
 
     <main class="content">
       <aside class="sidebar">
+        <section class="panel dice-panel">
+          <h2>Кубики</h2>
+          <div class="dice-controls">
+            <input type="number" id="diceCount" min="1" max="99" value="1" title="Количество кубиков">
+            <select id="diceType" title="Тип кубика">
+              <option value="4">d4</option>
+              <option value="6">d6</option>
+              <option value="8">d8</option>
+              <option value="10">d10</option>
+              <option value="12">d12</option>
+              <option value="20">d20</option>
+              <option value="100">d100</option>
+            </select>
+            <button type="button" class="btn" id="diceRoll">Бросить</button>
+          </div>
+          <div class="dice-result" id="diceResult" hidden></div>
+        </section>
         <section class="panel">
           <h2>Точки проверок</h2>
           <p class="hint">Нажмите «Добавить проверку» и кликните по карте, чтобы разместить точку.</p>
