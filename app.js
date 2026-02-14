@@ -248,22 +248,19 @@ function onDiceRoll() {
 
   const ROLL_DURATION = 600;
   const TICK = 80;
-  let elapsed = 0;
   const intervalId = setInterval(() => {
-    elapsed += TICK;
-    if (valueEl) {
-      valueEl.textContent = rollDie(sides);
-    }
-    if (elapsed >= ROLL_DURATION) {
-      clearInterval(intervalId);
-      if (valueEl) valueEl.textContent = count === 1 ? rolls[0] : `= ${sum}`;
-      setTimeout(() => {
-        dom.diceResult.classList.remove('is-rolling');
-        dom.diceResult.innerHTML = '';
-        dom.diceResult.textContent = finalText;
-      }, 80);
-    }
+    if (valueEl) valueEl.textContent = rollDie(sides);
   }, TICK);
+
+  setTimeout(() => {
+    clearInterval(intervalId);
+    if (valueEl) valueEl.textContent = count === 1 ? rolls[0] : `= ${sum}`;
+    setTimeout(() => {
+      dom.diceResult.classList.remove('is-rolling');
+      dom.diceResult.innerHTML = '';
+      dom.diceResult.textContent = finalText;
+    }, 80);
+  }, ROLL_DURATION);
 }
 
 // --- Маркеры (точки проверок) ---
