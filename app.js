@@ -21,7 +21,6 @@ const dom = {
   markersList: document.getElementById('markersList'),
   revealSize: document.getElementById('revealSize'),
   modeReveal: document.getElementById('modeReveal'),
-  modeMarker: document.getElementById('modeMarker'),
   resetBtn: document.getElementById('resetBtn'),
   markerModal: document.getElementById('markerModal'),
   markerName: document.getElementById('markerName'),
@@ -41,7 +40,7 @@ let state = {
   revealed: {}, // { "i,j": true }
   markers: [],  // { id, x, y, name, check }
   nextMarkerId: 1,
-  mode: 'reveal', // 'reveal' | 'marker'
+  mode: 'marker', // 'reveal' | 'marker' — по умолчанию клик добавляет точку
   pendingMarker: null, // { x, y } в процентах при добавлении маркера
 };
 
@@ -68,21 +67,19 @@ function bindEvents() {
   dom.imageInput.addEventListener('change', onImageSelect);
   dom.cols.addEventListener('change', onGridChange);
   dom.rows.addEventListener('change', onGridChange);
-  dom.modeReveal.addEventListener('click', () => setMode('reveal'));
-  dom.modeMarker.addEventListener('click', () => setMode('marker'));
+  dom.modeReveal.addEventListener('click', () => setMode(state.mode === 'reveal' ? 'marker' : 'reveal'));
   dom.resetBtn.addEventListener('click', onReset);
   dom.markerSave.addEventListener('click', onMarkerSave);
   dom.markerCancel.addEventListener('click', closeMarkerModal);
   dom.markerModal.addEventListener('hidden.bs.modal', () => { state.pendingMarker = null; });
   dom.diceRoll.addEventListener('click', onDiceRoll);
 
-  dom.fogLayer.addEventListener('click', onMapClick);
+  dom.mapContainer.addEventListener('click', onMapClick);
 }
 
 function setMode(mode) {
   state.mode = mode;
   dom.modeReveal.classList.toggle('active', mode === 'reveal');
-  dom.modeMarker.classList.toggle('active', mode === 'marker');
 }
 
 // --- Загрузка изображения и сетка ---
@@ -179,20 +176,21 @@ function renderFog() {
 
 function onMapClick(e) {
   const fogCell = e.target.closest('.fog-cell');
-  if (!fogCell) return;
+  const gridCell = e.target.closest('.cell');
+  const cellEl = fogCell || gridCell;
+  if (!cellEl) return;
 
-  const i = parseInt(fogCell.dataset.i, 10);
-  const j = parseInt(fogCell.dataset.j, 10);
-  const key = `${i},${j}`;
+  const i = parseInt(cellEl.dataset.i, 10);
+  const j = parseInt(cellEl.dataset.j, 10);
 
   if (state.mode === 'reveal') {
     const radius = parseInt(dom.revealSize?.value || '0', 10);
-    const ci = parseInt(fogCell.dataset.i, 10);
-    const cj = parseInt(fogCell.dataset.j, 10);
-    for (let j = cj - radius; j <= cj + radius; j++) {
-      for (let i = ci - radius; i <= ci + radius; i++) {
-        if (i < 0 || i >= state.cols || j < 0 || j >= state.rows) continue;
-        const k = `${i},${j}`;
+    const ci = i;
+    const cj = j;
+    for (let jj = cj - radius; jj <= cj + radius; jj++) {
+      for (let ii = ci - radius; ii <= ci + radius; ii++) {
+        if (ii < 0 || ii >= state.cols || jj < 0 || jj >= state.rows) continue;
+        const k = `${ii},${jj}`;
         state.revealed[k] = true;
         const fc = dom.fogLayer.querySelector(`[data-key="${k}"]`);
         if (fc) fc.classList.add('revealed');
