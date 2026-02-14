@@ -19,8 +19,7 @@ html {
   --accent-hover: #a9b8e8;
   --success: #9ece6a;
   --danger: #f7768e;
-  --fog: rgba(26, 27, 38, 0.98);
-  --filter: blur(5px);
+  --fog: blur(15px);
   --font-ui: Arial, Helvetica, sans-serif;
 }
 
