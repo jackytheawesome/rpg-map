@@ -36,7 +36,6 @@
             </select>
           </label>
           <button type="button" class="btn btn-outline-primary btn-sm" id="modeReveal" title="Открывать клетки по клику">Открыть клетки</button>
-          <button type="button" class="btn btn-outline-primary btn-sm" id="modeMarker" title="Добавить точку проверки">Добавить проверку</button>
         </div>
         <button type="button" class="btn btn-danger btn-sm" id="resetBtn">Сбросить карту</button>
       </div>
@@ -72,7 +71,8 @@
             <h2 class="card-title h6 mb-0">Точки проверок</h2>
           </div>
           <div class="card-body py-2">
-            <p class="text-muted small mb-2">Нажмите «Добавить проверку» и кликните по карте, чтобы разместить точку.</p>
+            <button type="button" class="btn btn-outline-primary btn-sm w-100 mb-2" id="modeMarker" title="Добавить точку проверки">Добавить проверку</button>
+            <p class="text-muted small mb-2">Нажмите кнопку выше и кликните по карте, чтобы разместить точку.</p>
             <ul class="list-group list-group-flush" id="markersList"></ul>
           </div>
         </section>
