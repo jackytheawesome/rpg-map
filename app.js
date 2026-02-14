@@ -229,15 +229,41 @@ function onDiceRoll() {
   const sum = rolls.reduce((a, b) => a + b, 0);
 
   const label = count === 1 ? `d${sides}` : `${count}d${sides}`;
-  let detail;
+  let finalText;
   if (count <= 15) {
-    detail = rolls.join(' + ');
+    finalText = `${label}: ${rolls.join(' + ')}${count > 1 ? ` = ${sum}` : ''}`;
   } else {
-    detail = `${rolls.slice(0, 6).join(', ')}… (всего ${count})`;
+    finalText = `${label}: ${rolls.slice(0, 6).join(', ')}… (всего ${count}) = ${sum}`;
   }
-  const totalText = count > 1 ? ` = ${sum}` : '';
-  dom.diceResult.textContent = `${label}: ${detail}${totalText}`;
+
+  // Показать анимацию «крутящегося» кубика 600ms
   dom.diceResult.hidden = false;
+  dom.diceResult.classList.add('is-rolling');
+  dom.diceResult.innerHTML = `
+    <span class="dice-roll-preview">
+      ${label}: <span class="dice-roll-value" aria-hidden="true">?</span>
+    </span>
+  `;
+  const valueEl = dom.diceResult.querySelector('.dice-roll-value');
+
+  const ROLL_DURATION = 600;
+  const TICK = 80;
+  let elapsed = 0;
+  const intervalId = setInterval(() => {
+    elapsed += TICK;
+    if (valueEl) {
+      valueEl.textContent = rollDie(sides);
+    }
+    if (elapsed >= ROLL_DURATION) {
+      clearInterval(intervalId);
+      if (valueEl) valueEl.textContent = count === 1 ? rolls[0] : `= ${sum}`;
+      setTimeout(() => {
+        dom.diceResult.classList.remove('is-rolling');
+        dom.diceResult.innerHTML = '';
+        dom.diceResult.textContent = finalText;
+      }, 80);
+    }
+  }, TICK);
 }
 
 // --- Маркеры (точки проверок) ---
