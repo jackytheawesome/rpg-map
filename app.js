@@ -21,6 +21,8 @@ const dom = {
   markersList: document.getElementById('markersList'),
   revealSize: document.getElementById('revealSize'),
   modeReveal: document.getElementById('modeReveal'),
+  masterShowAll: document.getElementById('masterShowAll'),
+  masterHide: document.getElementById('masterHide'),
   resetBtn: document.getElementById('resetBtn'),
   markerModal: document.getElementById('markerModal'),
   markerName: document.getElementById('markerName'),
@@ -42,6 +44,7 @@ let state = {
   nextMarkerId: 1,
   mode: 'marker', // 'reveal' | 'marker' — по умолчанию клик добавляет точку
   pendingMarker: null, // { x, y } в процентах при добавлении маркера
+  masterViewAll: false, // режим мастера: показывать всю карту (не сохраняется)
 };
 
 // --- Инициализация ---
@@ -68,6 +71,8 @@ function bindEvents() {
   dom.cols.addEventListener('change', onGridChange);
   dom.rows.addEventListener('change', onGridChange);
   dom.modeReveal.addEventListener('click', () => setMode(state.mode === 'reveal' ? 'marker' : 'reveal'));
+  dom.masterShowAll.addEventListener('click', onMasterShowAll);
+  dom.masterHide.addEventListener('click', onMasterHide);
   dom.resetBtn.addEventListener('click', onReset);
   dom.markerSave.addEventListener('click', onMarkerSave);
   dom.markerCancel.addEventListener('click', closeMarkerModal);
@@ -80,6 +85,26 @@ function bindEvents() {
 function setMode(mode) {
   state.mode = mode;
   dom.modeReveal.classList.toggle('active', mode === 'reveal');
+}
+
+function isCellVisible(key) {
+  return state.revealed[key] || state.masterViewAll;
+}
+
+function onMasterShowAll() {
+  state.masterViewAll = true;
+  renderFog();
+  renderGrid();
+  dom.masterShowAll.classList.add('active');
+  dom.masterHide.classList.remove('active');
+}
+
+function onMasterHide() {
+  state.masterViewAll = false;
+  renderFog();
+  renderGrid();
+  dom.masterShowAll.classList.remove('active');
+  dom.masterHide.classList.remove('active');
 }
 
 // --- Загрузка изображения и сетка ---
@@ -139,7 +164,7 @@ function renderGrid() {
       cell.dataset.i = i;
       cell.dataset.j = j;
       cell.dataset.key = `${i},${j}`;
-      if (state.revealed[`${i},${j}`]) cell.classList.add('revealed');
+      if (isCellVisible(`${i},${j}`)) cell.classList.add('revealed');
       dom.gridLayer.appendChild(cell);
     }
   }
@@ -159,7 +184,7 @@ function renderFog() {
     for (let i = 0; i < cols; i++) {
       const key = `${i},${j}`;
       const fogCell = document.createElement('div');
-      fogCell.className = 'fog-cell' + (state.revealed[key] ? ' revealed' : '');
+      fogCell.className = 'fog-cell' + (isCellVisible(key) ? ' revealed' : '');
       fogCell.dataset.i = i;
       fogCell.dataset.j = j;
       fogCell.dataset.key = key;
