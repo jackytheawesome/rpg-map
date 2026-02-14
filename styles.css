@@ -119,7 +119,7 @@
 .fog-cell {
   position: absolute;
   background: rgba(26, 27, 38, 0.85);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(14px);
   pointer-events: auto;
   cursor: pointer;
   transition: opacity 0.25s;
