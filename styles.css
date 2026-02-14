@@ -17,7 +17,7 @@
   --danger: #f7768e;
   --fog: rgba(26, 27, 38, 0.98);
   --filter: blur(5px)
-  --font-ui: 'Segoe UI', system-ui, sans-serif;
+  --font-ui: 'Manrope', system-ui, sans-serif;
 }
 
 body {
@@ -214,7 +214,7 @@ body {
   border-radius: 6px;
   border-left: 3px solid var(--accent);
   font-size: 0.95rem;
-  font-family: ui-monospace, monospace;
+  font-family: var(--font-ui);
   word-break: break-word;
   min-height: 2.5rem;
   display: flex;
