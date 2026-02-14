@@ -217,6 +217,16 @@ function rollDie(sides) {
   return Math.floor(Math.random() * sides) + 1;
 }
 
+function formatD20Roll(value) {
+  if (value === 20) return '20 ⭐️';
+  if (value === 1) return '1 🔻';
+  return String(value);
+}
+
+function formatRollForDisplay(value, sides) {
+  return sides === 20 ? formatD20Roll(value) : String(value);
+}
+
 function onDiceRoll() {
   const count = Math.max(1, Math.min(99, parseInt(dom.diceCount.value, 10) || 1));
   const sides = parseInt(dom.diceType.value, 10);
@@ -229,11 +239,12 @@ function onDiceRoll() {
   const sum = rolls.reduce((a, b) => a + b, 0);
 
   const label = count === 1 ? `d${sides}` : `${count}d${sides}`;
+  const formattedRolls = rolls.map((r) => formatRollForDisplay(r, sides));
   let finalText;
   if (count <= 15) {
-    finalText = `${label}: ${rolls.join(' + ')}${count > 1 ? ` = ${sum}` : ''}`;
+    finalText = `${label}: ${formattedRolls.join(' + ')}${count > 1 ? ` = ${sum}` : ''}`;
   } else {
-    finalText = `${label}: ${rolls.slice(0, 6).join(', ')}… (всего ${count}) = ${sum}`;
+    finalText = `${label}: ${formattedRolls.slice(0, 6).join(', ')}… (всего ${count}) = ${sum}`;
   }
 
   // Показать анимацию «крутящегося» кубика 600ms
