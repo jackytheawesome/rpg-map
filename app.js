@@ -73,6 +73,7 @@ function bindEvents() {
   dom.resetBtn.addEventListener('click', onReset);
   dom.markerSave.addEventListener('click', onMarkerSave);
   dom.markerCancel.addEventListener('click', closeMarkerModal);
+  dom.markerModal.addEventListener('hidden.bs.modal', () => { state.pendingMarker = null; });
   dom.diceRoll.addEventListener('click', onDiceRoll);
 
   dom.fogLayer.addEventListener('click', onMapClick);
@@ -276,16 +277,21 @@ function onDiceRoll() {
 
 // --- Маркеры (точки проверок) ---
 
+let markerModalInstance = null;
+
 function openMarkerModal(pos) {
   state.pendingMarker = pos;
   dom.markerName.value = '';
   dom.markerCheck.value = '';
-  dom.markerModal.hidden = false;
+  if (!markerModalInstance) {
+    markerModalInstance = bootstrap.Modal.getOrCreateInstance(dom.markerModal);
+  }
+  markerModalInstance.show();
 }
 
 function closeMarkerModal() {
+  if (markerModalInstance) markerModalInstance.hide();
   state.pendingMarker = null;
-  dom.markerModal.hidden = true;
 }
 
 function onMarkerSave() {
@@ -334,12 +340,13 @@ function renderMarkersList() {
   dom.markersList.innerHTML = '';
   state.markers.forEach((m, index) => {
     const li = document.createElement('li');
+    li.className = 'list-group-item d-flex justify-content-between align-items-start';
     li.innerHTML = `
       <span>
         <strong>${index + 1}. ${escapeHtml(m.name)}</strong>
-        ${m.check ? `<div class="marker-check">${escapeHtml(m.check)}</div>` : ''}
+        ${m.check ? `<div class="marker-check text-muted small">${escapeHtml(m.check)}</div>` : ''}
       </span>
-      <button type="button" aria-label="Удалить" data-id="${m.id}">×</button>
+      <button type="button" class="btn btn-sm btn-outline-danger" aria-label="Удалить" data-id="${m.id}">×</button>
     `;
     li.querySelector('button').addEventListener('click', () => deleteMarker(m.id));
     dom.markersList.appendChild(li);

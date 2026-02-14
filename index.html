@@ -7,86 +7,121 @@
   <link rel="stylesheet" href="vendor/bootstrap/bootstrap.css">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <div class="app">
-    <header class="toolbar">
-      <h1>Карта приключения</h1>
-      <div class="toolbar-actions">
-        <label class="btn btn-secondary">
+<body class="d-flex flex-column min-vh-100">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
+    <div class="container-fluid flex-wrap">
+      <span class="navbar-brand mb-0 h1">Карта приключения</span>
+      <div class="d-flex flex-wrap align-items-center gap-2">
+        <label class="btn btn-outline-light btn-sm">
           Загрузить карту
           <input type="file" id="imageInput" accept="image/*" hidden>
         </label>
-        <div class="grid-controls">
-          <label>Клеток по горизонтали <input type="number" id="cols" min="4" max="24" value="8"></label>
-          <label>Клеток по вертикали <input type="number" id="rows" min="4" max="24" value="6"></label>
+        <div class="d-flex align-items-center gap-2">
+          <label class="d-flex align-items-center gap-1 small text-secondary">
+            Клеток X
+            <input type="number" id="cols" class="form-control form-control-sm" style="width: 4rem" min="4" max="24" value="8">
+          </label>
+          <label class="d-flex align-items-center gap-1 small text-secondary">
+            Y
+            <input type="number" id="rows" class="form-control form-control-sm" style="width: 4rem" min="4" max="24" value="6">
+          </label>
         </div>
-        <div class="mode-toggles">
-          <label class="reveal-size">
-            <span>Открыть:</span>
-            <select id="revealSize">
+        <div class="btn-group" role="group">
+          <label class="d-flex align-items-center gap-1 small text-secondary me-1 align-self-center">
+            Открыть:
+            <select id="revealSize" class="form-select form-select-sm" style="width: auto">
               <option value="0">1 клетку</option>
               <option value="1">3×3</option>
               <option value="2">5×5</option>
             </select>
           </label>
-          <button type="button" class="btn" id="modeReveal" title="Открывать клетки по клику">Открыть клетки</button>
-          <button type="button" class="btn" id="modeMarker" title="Добавить точку проверки">Добавить проверку</button>
+          <button type="button" class="btn btn-outline-primary btn-sm" id="modeReveal" title="Открывать клетки по клику">Открыть клетки</button>
+          <button type="button" class="btn btn-outline-primary btn-sm" id="modeMarker" title="Добавить точку проверки">Добавить проверку</button>
         </div>
-        <button type="button" class="btn btn-danger" id="resetBtn">Сбросить карту</button>
+        <button type="button" class="btn btn-danger btn-sm" id="resetBtn">Сбросить карту</button>
       </div>
-    </header>
+    </div>
+  </nav>
 
-    <main class="content">
-      <aside class="sidebar">
-        <section class="panel dice-panel">
-          <h2>🎲 Кубики</h2>
-          <div class="dice-controls">
-            <input type="number" id="diceCount" min="1" max="99" value="1" title="Количество кубиков">
-            <select id="diceType" title="Тип кубика">
-              <option value="4">d4</option>
-              <option value="6">d6</option>
-              <option value="8">d8</option>
-              <option value="10">d10</option>
-              <option value="12">d12</option>
-              <option value="20">d20</option>
-              <option value="100">d100</option>
-            </select>
-            <button type="button" class="btn" id="diceRoll">Бросить</button>
+  <main class="flex-grow-1 d-flex overflow-hidden">
+    <aside class="sidebar border-end bg-light overflow-auto">
+      <div class="p-3">
+        <section class="card mb-3">
+          <div class="card-header py-2">
+            <h2 class="card-title h6 mb-0">🎲 Кубики</h2>
           </div>
-          <div class="dice-result" id="diceResult" hidden></div>
+          <div class="card-body py-2">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+              <input type="number" id="diceCount" class="form-control form-control-sm" style="width: 4rem" min="1" max="99" value="1" title="Количество кубиков">
+              <select id="diceType" class="form-select form-select-sm" style="width: 5rem" title="Тип кубика">
+                <option value="4">d4</option>
+                <option value="6">d6</option>
+                <option value="8">d8</option>
+                <option value="10">d10</option>
+                <option value="12">d12</option>
+                <option value="20">d20</option>
+                <option value="100">d100</option>
+              </select>
+              <button type="button" class="btn btn-primary btn-sm" id="diceRoll">Бросить</button>
+            </div>
+            <div class="dice-result alert alert-secondary py-2 small mb-0" id="diceResult" role="alert" hidden></div>
+          </div>
         </section>
-        <section class="panel">
-          <h2>Точки проверок</h2>
-          <p class="hint">Нажмите «Добавить проверку» и кликните по карте, чтобы разместить точку.</p>
-          <ul id="markersList"></ul>
+        <section class="card mb-3">
+          <div class="card-header py-2">
+            <h2 class="card-title h6 mb-0">Точки проверок</h2>
+          </div>
+          <div class="card-body py-2">
+            <p class="text-muted small mb-2">Нажмите «Добавить проверку» и кликните по карте, чтобы разместить точку.</p>
+            <ul class="list-group list-group-flush" id="markersList"></ul>
+          </div>
         </section>
-        <section class="panel">
-          <h2>Подсказка</h2>
-          <p>Загрузите изображение карты — оно будет разбито на клетки. Открывайте клетки по мере продвижения игроков. Добавляйте точки, где нужны проверки (например, скрытность, восприятие).</p>
+        <section class="card">
+          <div class="card-header py-2">
+            <h2 class="card-title h6 mb-0">Подсказка</h2>
+          </div>
+          <div class="card-body py-2">
+            <p class="small mb-0">Загрузите изображение карты — оно будет разбито на клетки. Открывайте клетки по мере продвижения игроков. Добавляйте точки, где нужны проверки (например, скрытность, восприятие).</p>
+          </div>
         </section>
-      </aside>
+      </div>
+    </aside>
 
-      <div class="map-wrapper" id="mapWrapper">
-        <div class="map-placeholder" id="mapPlaceholder">
-          <p>Загрузите изображение карты</p>
+    <div class="map-wrapper flex-grow-1" id="mapWrapper">
+      <div class="map-placeholder" id="mapPlaceholder">
+        <p class="text-muted">Загрузите изображение карты</p>
+      </div>
+      <div class="map-container" id="mapContainer" hidden>
+        <img id="mapImage" alt="Карта">
+        <div class="grid-layer" id="gridLayer"></div>
+        <div class="fog-layer" id="fogLayer"></div>
+        <div class="markers-layer" id="markersLayer"></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal fade" id="markerModal" tabindex="-1" aria-labelledby="markerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title h5" id="markerModalLabel">Точка проверки</h3>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
         </div>
-        <div class="map-container" id="mapContainer" hidden>
-          <img id="mapImage" alt="Карта">
-          <div class="grid-layer" id="gridLayer"></div>
-          <div class="fog-layer" id="fogLayer"></div>
-          <div class="markers-layer" id="markersLayer"></div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="markerName" class="form-label">Название</label>
+            <input type="text" id="markerName" class="form-control" placeholder="Например: Засада гоблинов">
+          </div>
+          <div class="mb-0">
+            <label for="markerCheck" class="form-label">Описание / тип проверки</label>
+            <input type="text" id="markerCheck" class="form-control" placeholder="Скрытность, Восприятие...">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="markerCancel">Отмена</button>
+          <button type="button" class="btn btn-primary" id="markerSave">Сохранить</button>
         </div>
       </div>
-    </main>
-  </div>
-
-  <div class="modal" id="markerModal" hidden>
-    <div class="modal-content">
-      <h3>Точка проверки</h3>
-      <label>Название <input type="text" id="markerName" placeholder="Например: Засада гоблинов"></label>
-      <label>Описание / тип проверки <input type="text" id="markerCheck" placeholder="Скрытность, Восприятие..."></label>
-      <button type="button" class="btn" id="markerSave">Сохранить</button>
-      <button type="button" class="btn btn-secondary" id="markerCancel">Отмена</button>
     </div>
   </div>
 
