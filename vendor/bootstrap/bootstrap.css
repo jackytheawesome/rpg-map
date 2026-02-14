@@ -105,7 +105,7 @@
   --bs-border-style: solid;
   --bs-border-color: #dee2e6;
   --bs-border-color-translucent: rgba(0, 0, 0, 0.175);
-  --bs-border-radius: 2px;
+  --bs-border-radius: 8px;
   --bs-border-radius-sm: 8px;
   --bs-border-radius-lg: 12px;
   --bs-border-radius-xl: 16px;
@@ -4385,7 +4385,7 @@ textarea.form-control-lg {
   --bs-card-subtitle-color: ;
   --bs-card-border-width: var(--bs-border-width);
   --bs-card-border-color: var(--bs-border-color-translucent);
-  --bs-card-border-radius: var(--bs-border-radius);
+  --bs-card-border-radius: var(--bs-border-radius-lg);
   --bs-card-box-shadow: ;
   --bs-card-inner-border-radius: calc(var(--bs-border-radius) - (var(--bs-border-width)));
   --bs-card-cap-padding-y: 0.5rem;
